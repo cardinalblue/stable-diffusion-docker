@@ -90,4 +90,13 @@ then
     /start_tensorboard.sh
 fi
 
+echo "Copying existing models..."
+cp /instruments_downloaded/lora/* /workspace/stable-diffusion-webui/models/Lora/
+cp /instruments_downloaded/stable-diffusion/* /workspace/stable-diffusion-webui/models/Stable-diffusion/
+
+echo "Starting watchers..."
+cd /
+nohup ./watcher.sh > /workspace/logs/watcher.log 2>&1 &
+nohup ./sd-logs-watcher.sh > /workspace/logs/sd-logs-watcher.log 2>&1 &
+
 echo "All services have been started"

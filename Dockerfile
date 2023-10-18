@@ -5,6 +5,10 @@ ARG WEBUI_VERSION=v1.6.0
 ARG DREAMBOOTH_COMMIT=cf086c536b141fc522ff11f6cffc8b7b12da04b9
 ARG KOHYA_VERSION=v22.1.0
 
+ENV WEBUI_VERSION=${WEBUI_VERSION}
+ENV DREAMBOOTH_COMMIT=${DREAMBOOTH_COMMIT}
+ENV KOHYA_VERSION=${KOHYA_VERSION}
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Europe/London \
@@ -52,10 +56,13 @@ RUN apt update && \
         htop \
         pkg-config \
         plocate \
+        inotify-tools \
         libcairo2-dev \
         libgoogle-perftools4 \
         libtcmalloc-minimal4 \
         apt-transport-https \
+        bsdmainutils \
+        jq \
         ca-certificates && \
     update-ca-certificates && \
     apt clean && \
@@ -74,6 +81,13 @@ FROM base as setup
 
 RUN mkdir -p /sd-models
 
+# Add SD models
+# These need to already have been downloaded:
+#   wget https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.safetensors
+#   wget https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors
+COPY v1-5-pruned.safetensors /sd-models/v1-5-pruned.safetensors
+COPY vae-ft-mse-840000-ema-pruned.safetensors /sd-models/vae-ft-mse-840000-ema-pruned.safetensors
+
 # Add SDXL models and VAE
 # These need to already have been downloaded:
 #   wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
@@ -88,6 +102,7 @@ COPY sdxl_vae.safetensors /sd-models/sdxl_vae.safetensors
 WORKDIR /
 RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
     cd /stable-diffusion-webui && \
+    git fetch --all && \
     git checkout tags/${WEBUI_VERSION}
 
 WORKDIR /stable-diffusion-webui
@@ -233,7 +248,7 @@ RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/scr
 
 # Install CivitAI Model Downloader
 RUN git clone --depth=1 https://github.com/ashleykleynhans/civitai-downloader.git && \
-    mv civitai-downloader/download.sh /usr/local/bin/download-model && \
+    mv civitai-downloader/ /usr/local/bin/download-model && \
     chmod +x /usr/local/bin/download-model
 
 # Copy Stable Diffusion Web UI config files
