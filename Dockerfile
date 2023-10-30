@@ -1,5 +1,6 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
+# FROM nvidia/cuda:11.8.0-base-ubuntu22.04 as base
 
 ARG WEBUI_VERSION=v1.6.0
 ARG DREAMBOOTH_COMMIT=cf086c536b141fc522ff11f6cffc8b7b12da04b9
@@ -266,6 +267,17 @@ COPY nginx/502.html /usr/share/nginx/html/502.html
 COPY nginx/README.md /usr/share/nginx/html/README.md
 
 WORKDIR /
+
+# NVIDIA Container Toolkit
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN apt update && \
+    apt -y upgrade && \
+    apt install -y --no-install-recommends cuda-11-8
+
+# setup your paths
+RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
+RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
 
 # Copy the scripts
 COPY --chmod=755 scripts/* ./

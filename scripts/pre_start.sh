@@ -96,6 +96,7 @@ cp /instruments_downloaded/stable-diffusion/* /workspace/stable-diffusion-webui/
 
 echo "Starting watchers..."
 cd /
+python ./watch-dirs.py > /workspace/logs/watch-dir.log 2>&1 &
 nohup ./watcher.sh > /workspace/logs/watcher.log 2>&1 &
 nohup ./sd-logs-watcher.sh > /workspace/logs/sd-logs-watcher.log 2>&1 &
 

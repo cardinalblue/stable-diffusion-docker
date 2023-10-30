@@ -10,7 +10,7 @@ help: ## This help.
 
 APP_NAME = stable-diffusion-sdxl
 
-STAGING_TAG_NAME = asia.gcr.io/piccollage-ml-dev/stable-diffusion-sdxl
+STAGING_TAG_NAME = asia.gcr.io/piccollage-ml-dev/uwu-webui
 
 docker-run-staging:
 	docker run -it --rm --gpus all -p 3011:3011 -p 3021:3021 -p 6066:6066 -p 3001:3001 $(STAGING_TAG_NAME)
@@ -21,8 +21,8 @@ docker-build-staging:
 docker-push-staging:
 	docker push $(STAGING_TAG_NAME)
 
-deploy-to-cloud-run-staging:
-	gcloud run deploy $(APP_NAME) --platform managed \
-	--region asia-east1 --image $(STAGING_TAG_NAME):latest \
-	--cpu=2 --memory=4Gi --min-instances=1 --timeout=5m \
-	--allow-unauthenticated --execution-environment gen2 --no-cpu-throttling
+# deploy-to-cloud-run-staging:
+# 	gcloud run deploy $(APP_NAME) --platform managed \
+# 	--region asia-east1 --image $(STAGING_TAG_NAME):latest \
+# 	--cpu=2 --memory=4Gi --min-instances=1 --timeout=5m \
+# 	--allow-unauthenticated --execution-environment gen2 --no-cpu-throttling

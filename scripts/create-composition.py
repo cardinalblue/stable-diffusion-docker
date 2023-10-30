@@ -26,7 +26,7 @@ else:
     action_type = 'txt2img'
 
 # Define the URL of the DRF endpoint you want to send data to
-url = 'http://django:8000/api/compositions/'
+url = 'http://django:8000/django/api/compositions/'
 
 # Define the data you want to send as a dictionary (replace with your data)
 data_to_send = {
@@ -40,7 +40,7 @@ data_to_send = {
 print(data_to_send)
 
 # Make a POST request to the DRF endpoint with the data
-headers = {'Authorization': 'Token dee5858d0aa683c7379714d9736deaa9857d392d'}
+headers = {'Authorization': 'Token faa8ac6ea11a1278e63c7da4c54641f38a8022c8'}
 response = requests.post(url, json=data_to_send, headers=headers)
 
 # Check the response status code and content
