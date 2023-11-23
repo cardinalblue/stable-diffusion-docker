@@ -1,6 +1,6 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
-# FROM nvidia/cuda:11.8.0-base-ubuntu22.04 as base
+# FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-devel as base
 
 ARG WEBUI_VERSION=v1.6.0
 ARG DREAMBOOTH_COMMIT=cf086c536b141fc522ff11f6cffc8b7b12da04b9
@@ -136,23 +136,36 @@ RUN git clone https://github.com/d8ahazard/sd_dreambooth_extension.git extension
     git clone --depth=1 https://github.com/zanllp/sd-webui-infinite-image-browsing.git extensions/infinite-image-browsing && \
     git clone --depth=1 https://github.com/Uminosachi/sd-webui-inpaint-anything.git extensions/inpaint-anything && \
     git clone --depth=1 https://github.com/Bing-su/adetailer.git extensions/adetailer && \
-    git clone --depth=1 https://github.com/civitai/sd_civitai_extension.git extensions/sd_civitai_extension
+    git clone --depth=1 https://github.com/civitai/sd_civitai_extension.git extensions/sd_civitai_extension && \
+    git clone --depth=1 https://github.com/huchenlei/sd-webui-api-payload-display extensions/sd-webui-api-payload-display && \
+    git clone --depth=1 https://github.com/djbielejeski/a-person-mask-generator.git extensions/a-person-mask-generator
 
 # Install dependencies for Deforum, ControlNet, roop, and After Detailer extensions
 RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/deforum && \
-    pip3 install -r requirements.txt && \
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/sd-webui-controlnet && \
-    pip3 install -r requirements.txt && \
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/sd-webui-roop && \
-    pip3 install -r requirements.txt && \
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/infinite-image-browsing && \
-    pip3 install -r requirements.txt && \
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/adetailer && \
-    python -m install && \
+    python -m install
+RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/sd_civitai_extension && \
-    pip3 install -r requirements.txt && \
-    deactivate
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
+    cd /stable-diffusion-webui/extensions/sd-webui-api-payload-display && \
+    pip3 install -r requirements.txt
+RUN source /venv/bin/activate && \
+    cd /stable-diffusion-webui/extensions/a-person-mask-generator && \
+    pip3 install -r requirements.txt
+RUN deactivate
 
 # Install dependencies for inpaint anything extension
 RUN source /venv/bin/activate && \
@@ -268,16 +281,16 @@ COPY nginx/README.md /usr/share/nginx/html/README.md
 
 WORKDIR /
 
-# NVIDIA Container Toolkit
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
-RUN dpkg -i cuda-keyring_1.0-1_all.deb
-RUN apt update && \
-    apt -y upgrade && \
-    apt install -y --no-install-recommends cuda-11-8
+# # NVIDIA Container Toolkit
+# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
+# RUN dpkg -i cuda-keyring_1.0-1_all.deb
+# RUN apt update && \
+#     apt -y upgrade && \
+#     apt install -y --no-install-recommends cuda-11-8
 
-# setup your paths
-RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
-RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+# # setup your paths
+# RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
+# RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
 
 # Copy the scripts
 COPY --chmod=755 scripts/* ./

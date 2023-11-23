@@ -34,6 +34,7 @@ if __name__ == "__main__":
         ("/instruments_downloaded/lora", "/workspace/stable-diffusion-webui/models/Lora"),
         ("/instruments_downloaded/stable-diffusion", "/workspace/stable-diffusion-webui/models/Stable-diffusion"),
         ("/instruments_downloaded/controlnet", "/workspace/stable-diffusion-webui/models/ControlNet"),
+        ("/instruments_downloaded/vae", "/workspace/stable-diffusion-webui/models/VAE"),
     ]
 
     print(f"Watching {len(directory_pairs)} directories")
