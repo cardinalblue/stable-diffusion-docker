@@ -20,9 +20,3 @@ docker-build-staging:
 
 docker-push-staging:
 	docker push $(STAGING_TAG_NAME)
-
-# deploy-to-cloud-run-staging:
-# 	gcloud run deploy $(APP_NAME) --platform managed \
-# 	--region asia-east1 --image $(STAGING_TAG_NAME):latest \
-# 	--cpu=2 --memory=4Gi --min-instances=1 --timeout=5m \
-# 	--allow-unauthenticated --execution-environment gen2 --no-cpu-throttling

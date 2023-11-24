@@ -3,11 +3,9 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
 
 ARG WEBUI_VERSION=v1.6.0
 ARG DREAMBOOTH_COMMIT=cf086c536b141fc522ff11f6cffc8b7b12da04b9
-ARG KOHYA_VERSION=v22.1.0
 
 ENV WEBUI_VERSION=${WEBUI_VERSION}
 ENV DREAMBOOTH_COMMIT=${DREAMBOOTH_COMMIT}
-ENV KOHYA_VERSION=${KOHYA_VERSION}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -192,68 +190,11 @@ RUN source /venv/bin/activate && \
     pip3 cache purge && \
     deactivate
 
-# Install Kohya_ss
-RUN git clone https://github.com/bmaltais/kohya_ss.git /kohya_ss
-WORKDIR /kohya_ss
-COPY kohya_ss/requirements* ./
-RUN git checkout ${KOHYA_VERSION} && \
-    python3 -m venv --system-site-packages venv && \
-    source venv/bin/activate && \
-    pip3 install --no-cache-dir torch==2.0.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
-    pip3 install --no-cache-dir xformers==0.0.22 \
-        bitsandbytes==0.41.1 \
-        tensorboard==2.14.1 \
-        tensorflow==2.14.0 \
-        wheel \
-        scipy \
-        tensorrt && \
-    pip3 install -r requirements.txt && \
-    pip3 install . && \
-    pip3 cache purge && \
-    deactivate
-
-# Install ComfyUI
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
-WORKDIR /ComfyUI
-RUN python3 -m venv --system-site-packages venv && \
-    source venv/bin/activate && \
-    pip3 install --no-cache-dir torch==2.0.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
-    pip3 install --no-cache-dir xformers==0.0.22 && \
-    pip3 install -r requirements.txt && \
-    pip3 cache purge && \
-    deactivate
-
-# Install ComfyUI Custom Nodes
-RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git custom_nodes/ComfyUI-Manager
-
-# Install Application Manager
-WORKDIR /
-RUN git clone https://github.com/ashleykleynhans/app-manager.git /app-manager && \
-    cd /app-manager && \
-    npm install
-
-# Install Jupyter
-WORKDIR /
-RUN pip3 install -U --no-cache-dir jupyterlab \
-        jupyterlab_widgets \
-        ipykernel \
-        ipywidgets \
-        gdown
-
 # Install rclone
 RUN curl https://rclone.org/install.sh | bash
 
-# Install runpodctl
-RUN wget https://github.com/runpod/runpodctl/releases/download/v1.10.0/runpodctl-linux-amd -O runpodctl && \
-    chmod a+x runpodctl && \
-    mv runpodctl /usr/local/bin
-
 # Install croc
 RUN curl https://getcroc.schollz.com | bash
-
-# Install speedtest CLI
-RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash && \
-    apt install speedtest
 
 # Install CivitAI Model Downloader
 RUN git clone --depth=1 https://github.com/ashleykleynhans/civitai-downloader.git && \
@@ -265,9 +206,6 @@ COPY a1111/relauncher.py a1111/webui-user.sh a1111/config.json a1111/ui-config.j
 
 # ADD SDXL styles.csv
 ADD https://raw.githubusercontent.com/Douleb/SDXL-750-Styles-GPT4-/main/styles.csv /stable-diffusion-webui/styles.csv
-
-# Copy ComfyUI Extra Model Paths (to share models with A1111)
-COPY comfyui/extra_model_paths.yaml /ComfyUI/
 
 # NGINX Proxy
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
@@ -289,9 +227,6 @@ WORKDIR /
 
 # Copy the scripts
 COPY --chmod=755 scripts/* ./
-
-# Copy the accelerate configuration
-COPY kohya_ss/accelerate.yaml ./
 
 # Start the container
 SHELL ["/bin/bash", "--login", "-c"]
