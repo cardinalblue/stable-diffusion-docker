@@ -83,17 +83,17 @@ RUN mkdir -p /sd-models
 # These need to already have been downloaded:
 #   wget https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.safetensors
 #   wget https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors
-COPY v1-5-pruned.safetensors /sd-models/v1-5-pruned.safetensors
-COPY vae-ft-mse-840000-ema-pruned.safetensors /sd-models/vae-ft-mse-840000-ema-pruned.safetensors
+COPY preloaded/v1-5-pruned.safetensors /sd-models/v1-5-pruned.safetensors
+COPY preloaded/vae-ft-mse-840000-ema-pruned.safetensors /sd-models/vae-ft-mse-840000-ema-pruned.safetensors
 
 # Add SDXL models and VAE
 # These need to already have been downloaded:
 #   wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
 #   wget https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors
 #   wget https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
-COPY sd_xl_base_1.0.safetensors /sd-models/sd_xl_base_1.0.safetensors
-COPY sd_xl_refiner_1.0.safetensors /sd-models/sd_xl_refiner_1.0.safetensors
-COPY sdxl_vae.safetensors /sd-models/sdxl_vae.safetensors
+COPY preloaded/sd_xl_base_1.0.safetensors /sd-models/sd_xl_base_1.0.safetensors
+COPY preloaded/sd_xl_refiner_1.0.safetensors /sd-models/sd_xl_refiner_1.0.safetensors
+COPY preloaded/sdxl_vae.safetensors /sd-models/sdxl_vae.safetensors
 
 # Clone the git repo of the Stable Diffusion Web UI by Automatic1111
 # and set version
@@ -181,7 +181,7 @@ RUN source /venv/bin/activate && \
 
 # Add inswapper model for the roop extension
 RUN mkdir -p /workspace/stable-diffusion-webui/models/roop
-COPY inswapper_128.onnx /workspace/stable-diffusion-webui/models/roop/inswapper_128.onnx
+COPY preloaded/inswapper_128.onnx /workspace/stable-diffusion-webui/models/roop/inswapper_128.onnx
 
 # Fix Tensorboard
 RUN source /venv/bin/activate && \
@@ -224,6 +224,9 @@ WORKDIR /
 # # setup your paths
 # RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
 # RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+
+# Copy ControlNet .PTH files
+COPY /preloaded/extensions/sd-webui-controlnet/models /workspace/stable-diffusion-webui/extensions/sd-webui-controlnet/models
 
 # Copy the scripts
 COPY --chmod=755 scripts/* ./
