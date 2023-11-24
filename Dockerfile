@@ -1,6 +1,5 @@
 # Stage 1: Base
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 as base
-# FROM pytorch/pytorch:1.13.0-cuda11.6-cudnn8-devel as base
 
 ARG WEBUI_VERSION=v1.6.0
 ARG DREAMBOOTH_COMMIT=cf086c536b141fc522ff11f6cffc8b7b12da04b9
@@ -160,12 +159,9 @@ RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/sd_civitai_extension && \
     pip3 install -r requirements.txt
 RUN source /venv/bin/activate && \
-    cd /stable-diffusion-webui/extensions/sd-webui-api-payload-display && \
-    pip3 install -r requirements.txt
-RUN source /venv/bin/activate && \
     cd /stable-diffusion-webui/extensions/a-person-mask-generator && \
-    pip3 install -r requirements.txt
-RUN deactivate
+    pip3 install -r requirements.txt && \
+    deactivate
 
 # Install dependencies for inpaint anything extension
 RUN source /venv/bin/activate && \
@@ -186,9 +182,8 @@ RUN source /venv/bin/activate && \
     deactivate
 
 # Add inswapper model for the roop extension
-RUN mkdir -p /workspace/stable-diffusion-webui/models/roop && \
-    cd /workspace/stable-diffusion-webui/models/roop && \
-    wget https://huggingface.co/ashleykleynhans/inswapper/resolve/main/inswapper_128.onnx
+RUN mkdir -p /workspace/stable-diffusion-webui/models/roop
+COPY inswapper_128.onnx /workspace/stable-diffusion-webui/models/roop/inswapper_128.onnx
 
 # Fix Tensorboard
 RUN source /venv/bin/activate && \

@@ -81,8 +81,8 @@ then
     echo "   /start_comfyui.sh"
 else
     /start_a1111.sh
-    /start_kohya.sh
-    /start_comfyui.sh
+    # /start_kohya.sh
+    # /start_comfyui.sh
 fi
 
 if [ ${ENABLE_TENSORBOARD} ];
