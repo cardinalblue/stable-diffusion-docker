@@ -214,16 +214,16 @@ COPY nginx/README.md /usr/share/nginx/html/README.md
 
 WORKDIR /
 
-# # NVIDIA Container Toolkit
-# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
-# RUN dpkg -i cuda-keyring_1.0-1_all.deb
-# RUN apt update && \
-#     apt -y upgrade && \
-#     apt install -y --no-install-recommends cuda-11-8
+# NVIDIA Container Toolkit
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN apt update && \
+    apt -y upgrade && \
+    apt install -y --no-install-recommends cuda-11-8
 
-# # setup your paths
-# RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
-# RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+# setup your paths
+RUN echo 'export PATH=/usr/local/cuda-11.8/bin:$PATH' >> ~/.bashrc
+RUN echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
 
 # Copy ControlNet .PTH files
 COPY /preloaded/extensions/sd-webui-controlnet/models /workspace/stable-diffusion-webui/extensions/sd-webui-controlnet/models
