@@ -40,6 +40,7 @@ RUN apt update && \
         ffmpeg \
         wget \
         curl \
+        cron \
         psmisc \
         rsync \
         vim \
@@ -100,3 +101,5 @@ COPY --chmod=755 scripts/* ./
 # Start the container
 SHELL ["/bin/bash", "--login", "-c"]
 CMD [ "/start.sh" ]
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNlcl8yYUFCMWs3eUZ3Q0tBN0NGM3J5UjZmYjd0SHciLCJpYXQiOjE3MDM5NjcxNjl9.kcmJjouQzrOyuvKcLGIbAHar9hVsftH9-LY66dyqZ5Q
